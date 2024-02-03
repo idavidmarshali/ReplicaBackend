@@ -1,0 +1,81 @@
+#include <stdlib.h>
+#include <immintrin.h>
+#include <avxintrin.h>
+
+// ||| USES AVX512F and AVX512VL features
+#include "rMatrixFast.h"
+
+/**
+ * Does element wise addition of matrixA(n*m) with matrixB. if outMatrixC is Null then inplace addition
+ * would be done and the result would be saved into matrixA, else the result would be saved into 
+ * outMatrixC.<br>
+ * <code>
+ * RES = matrixA if outMatrixC is not NULL else outMatrixC<br>
+ * FOR I := 0 to n*m
+ * <br> RES[I] = matrixA[I] + matrixB[I] <br>
+ * END
+ * </code>
+ * @param matrixA 
+ * @param matrixB 
+ * @param outMatrixC NULLABLE
+ */
+void replica_matrix_fast_add_int(RMatrixHandle matrixA, RMatrixHandle matrixB, RMatrixHandle outMatrixC){
+    int* _res = (int*)((outMatrixC == NULL) * (size_t)matrixA + (size_t)(outMatrixC+1));
+    for (int i = 0; i < (matrixA->rows*matrixA->columns)/8 + ((matrixA->rows*matrixB->columns)%8 > 0); ++i) {
+        __m256i a = _mm256_loadu_epi32((int*)(matrixA+1)+(i*8));
+        __m256i b = _mm256_loadu_epi32((int*)(matrixB+1)+(i*8));
+        _mm256_storeu_epi32(_res + (i * 8), _mm256_add_epi32(a, b));
+    }
+}
+
+void replica_matrix_fast_sub_int(RMatrixHandle matrixA, RMatrixHandle matrixB, RMatrixHandle outMatrixC){
+    int* _res = (int*)((outMatrixC == NULL) * (size_t)matrixA + (size_t)(outMatrixC+1));
+    for (int i = 0; i < (matrixA->rows*matrixA->columns)/8 + ((matrixA->rows*matrixB->columns)%8 > 0); ++i) {
+        __m256i a = _mm256_loadu_epi32((int*)(matrixA+1)+(i*8));
+        __m256i b = _mm256_loadu_epi32((int*)(matrixB+1)+(i*8));
+        _mm256_storeu_epi32(_res + (i * 8), _mm256_sub_epi32(a, b));
+    }
+}
+
+void replica_matrix_fast_mult_int(RMatrixHandle matrixA, RMatrixHandle matrixB, RMatrixHandle outMatrixC){
+    int* _res = (int*)((outMatrixC == NULL) * (size_t)matrixA + (size_t)(outMatrixC+1));
+    for (int i = 0; i < (matrixA->rows*matrixA->columns)/8 + ((matrixA->rows*matrixB->columns)%8 > 0); ++i) {
+        __m256i a = _mm256_loadu_epi32((int*)(matrixA+1)+(i*8));
+        __m256i b = _mm256_loadu_epi32((int*)(matrixB+1)+(i*8));
+        _mm256_storeu_epi32(_res + (i * 8), _mm256_mul_epi32(a, b));
+    }
+}
+
+/**
+ * Fast element wise division from int to float on a matrix of n*m: <br><br>
+ * <code>
+ * FOR j:= 0 to n*m <br>
+ *      matrixC[j] = matrixA[j]/matrixB[j] <br>
+ * END
+ * </code>
+ * @param matrixA is an integer matrix of size n*m
+ * @param matrixB //
+ * @param outMatrixC <b>NOT NULL</b>. must be a single precision floating point matrix of size n*m
+ */
+void replica_matrix_fast_div_int_float(RMatrixHandle matrixA, RMatrixHandle matrixB, RMatrixHandle outMatrixC){
+    float* _res = (float*)(outMatrixC+1);
+    for (int i = 0; i < (matrixA->rows*matrixA->columns)/8 + ((matrixA->rows*matrixB->columns)%8 > 0); ++i) {
+        __m256 a = _mm256_loadu_ps((float*)(matrixA+1)+(i*8));
+        __m256 b = _mm256_loadu_ps((float*)(matrixB+1)+(i*8));
+        _mm256_storeu_ps(_res + (i * 8), _mm256_div_ps(a, b));
+    }
+}
+/**
+ * RES = outMatrixC == NULL ? matrixA : outMatrixC
+ * FOR I := 0 to n*m
+ *      RES[I] = matrixA[I] ^ matrixB[I]
+ * END
+ * 
+ * 2^(y*log2(x))
+ * 2^x : 
+ */
+void replica_matrix_fast_pow_int(RMatrixHandle matrixA, RMatrixHandle matrixB, RMatrixHandle outMatrixC){
+    return; // NOT IMPLEMENTED
+            // FOUND NO FAST WAY TO IMPLEMENT THIS.
+
+}   

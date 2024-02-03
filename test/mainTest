@@ -1,0 +1,26 @@
+a = ones(1000, 1000);
+b = rand(1000, 1000);
+
+c = a + b;
+d = a * b;
+
+e = a .* b;
+f = a ./ b;
+
+g = a ** N(int);
+h = a .** b;
+
+// TESTS
+
+a - a = zeros(size(a));
+a + b - b = a;
+any(...)
+    |
+    |
+   \|/
+all(all(b >= 0)); // all() reduces a matrix column to 1, 0 if condition is met:
+// A=[ 0 1 2
+//    -1 5 10
+//    e11 2 3]
+// all(A>=0) -> [0 1 1] -> all([0 1 1]) -> [0] = 0
+sum(sum(ones(10, 10)) - 10) == 0
