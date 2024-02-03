@@ -1,0 +1,41 @@
+MatlabReplica/
+ |
+ | matlab_replica/ (project source code)
+    | matlab_replica_backend/ (C Backend)
+        | src/
+            | mpMatrix.c ------------------ (implements matrix generation and manipulation functionalities)
+            | mpMath.c -------------------- (implements basic and classic math functionalities)
+            | mpMemory.c ------------------ (implements memory management functionalities)
+            | mpAvx.c --------------------- (implements low-level functions that call avx instructions with 
+                                      \----  inline asm for matrix manipulation)
+        | build/
+            | libMatlabReplica.dll
+        | include/
+            | matlabReplica.h ------------- (Wrapper around all library header files)
+            | mpMatrix.h ------------------ (matrix generation and manipulation function and data declarations)
+            | mpMath.h -------------------- (basic and classic math function declarations)
+            | mpMemory.h ------------------ (internal memory management function declarations)
+            | mpAvx.h
+        | test/
+            | test.c ---------------------- (a simple executable for quick testing the library)
+    | __init__.py ------------------------- (module initializer)  
+    | abc.py      ------------------------- (Base classes and Abstraction layers)
+        | Classes |
+        | LowLevelInterface --------------- (implements low-level connection interfaces between python and other libraries)
+        | ... (TBD)
+    | overrides.py ------------------------ (a module that provides python implementation overrides)
+        | BuiltinOverrides ---------------- (replaces python builtin data-types with corresponding ones in matlab-replica)
+        | InterpreterOverride ------------- (provides a method of changing interpreter behaviour and adding new syntax)
+    | matrix.py --------------------------- (Matrix base interface implementations)
+        | MetaMatrix ---------------------- (metaclass for re-implementing matrix class functionalities)
+        | Matrix -------------------------- (Super matrix class)
+    | classicmath.py ---------------------- (Classic math functions that work on numbers)
+ | setup.py ------------------------------- (Module setup script, for installation with pip)
+ | pyproject.toml ------------------------- (same as above for newer versions of python)
+ | venv/ ---------------------------------- (project virtual environment directory)
+ 
+ -------------------------------------------------------------------------
+ NOTES
+ 
+ segment and offset methods
+    
