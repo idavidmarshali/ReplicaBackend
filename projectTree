@@ -3,19 +3,22 @@ MatlabReplica/
  | matlab_replica/ (project source code)
     | matlab_replica_backend/ (C Backend)
         | src/
-            | mpMatrix.c ------------------ (implements matrix generation and manipulation functionalities)
-            | mpMath.c -------------------- (implements basic and classic math functionalities)
-            | mpMemory.c ------------------ (implements memory management functionalities)
-            | mpAvx.c --------------------- (implements low-level functions that call avx instructions with 
+            | rMatrix.c ------------------ (implements matrix generation and manipulation functionalities
+                                     \---- creates abstraction and checks over rMatrixFast.c)
+            | rMatrixFast.c -------------- (fast matrix operations using SIMD and OMP with no branching)
+            | rMath.c -------------------- (implements basic and classic math functionalities)
+            | rMemory.c ------------------ (implements memory management functionalities)
+            | rAvx.c --------------------- (implements low-level functions that call avx instructions with
                                       \----  inline asm for matrix manipulation)
         | build/
             | libMatlabReplica.dll
         | include/
-            | matlabReplica.h ------------- (Wrapper around all library header files)
-            | mpMatrix.h ------------------ (matrix generation and manipulation function and data declarations)
-            | mpMath.h -------------------- (basic and classic math function declarations)
-            | mpMemory.h ------------------ (internal memory management function declarations)
-            | mpAvx.h
+            | matlabReplica.h ------------ (Wrapper around all library header files)
+            | rMatrix.h ------------------ (matrix generation and manipulation function and data declarations)
+            | rMatrixFast.h -------------- (fast matrix operations function declarations)
+            | rMath.h -------------------- (basic and classic math function declarations)
+            | rMemory.h ------------------ (internal memory management function declarations)
+            | rAvx.h ---------------------
         | test/
             | test.c ---------------------- (a simple executable for quick testing the library)
     | __init__.py ------------------------- (module initializer)  
@@ -38,4 +41,6 @@ MatlabReplica/
  NOTES
  
  segment and offset methods
-    
+ SIMD Optem
+ AVX512 Alignment
+ OMP Optem
